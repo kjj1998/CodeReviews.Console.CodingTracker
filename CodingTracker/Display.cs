@@ -18,7 +18,7 @@ public static class Display
     {
         var selectionPrompt = new SelectionPrompt<string>
         {
-            Title = "\nWhat would you like to [green]do[/]?",
+            Title = "\n[bold]What would you like to [green]do[/][/]?",
             PageSize = 10,
             MoreChoicesText = "[grey](Move up and down to reveal more options)[/]",
             HighlightStyle = new Style(Color.Yellow, Color.Blue1, Decoration.Bold)

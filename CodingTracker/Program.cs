@@ -1,6 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using CodingTracker;
 
-using CodingTracker;
+Console.WriteLine(Utils.GetDatabaseNameFromConfig());
 
 Display.WelcomeDisplay();
 Display.MenuDisplay();
