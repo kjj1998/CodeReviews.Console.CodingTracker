@@ -1,4 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using CodingTracker;
 
-Console.WriteLine("Hello, World!");
+Display.WelcomeDisplay();
+Display.MenuDisplay();
+
