@@ -14,7 +14,7 @@ public static class Display
         Console.WriteLine("A summary of all of your coding sessions can also be viewed.");
     }
 
-    public static void MenuDisplay()
+    public static string MenuDisplay()
     {
         var selectionPrompt = new SelectionPrompt<string>
         {
@@ -24,18 +24,20 @@ public static class Display
             HighlightStyle = new Style(Color.Yellow, Color.Blue1, Decoration.Bold)
         };
         selectionPrompt.AddChoices([
-            "View all coding sessions",
-            "Create a new coding session",
-            "Update an existing coding session",
-            "Delete an existing coding session",
-            "View a summary of your coding sessions",
-            "Exit the application"
+            "1. View all coding sessions",
+            "2. Create a new coding session",
+            "3. Update an existing coding session",
+            "4. Delete an existing coding session",
+            "5. View a summary of your coding sessions",
+            "6. Exit the application"
         ]);
 
         string option = AnsiConsole.Prompt(selectionPrompt);
         option = LowerCaseFirstWord(option);
         
         AnsiConsole.WriteLine($"\nYou have chosen to {option}.");
+
+        return option;
     }
 
     private static string LowerCaseFirstWord(string input)

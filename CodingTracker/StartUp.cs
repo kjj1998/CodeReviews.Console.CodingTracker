@@ -74,11 +74,13 @@ public class StartUp
             int hour = random.Next(0, 24); // Random hour between 0 and 23
             int minute = random.Next(0, 60); // Random minute between 0 and 59
             int second = random.Next(0, 60); // Random second between 0 and 59
-            int codingSessionDurationInHours = random.Next(1, 4);
+            int codingSessionHours = random.Next(1, 4);
+            int codingSessionMinutes = random.Next(0, 60);
+            int codingSessionSeconds = random.Next(0, 60);
             
             var startTime = new DateTime(date.Year, date.Month, date.Day, hour, minute, second);
-            var endTime = startTime.AddHours(codingSessionDurationInHours);
-            int codingSessionDurationInSeconds = codingSessionDurationInHours * 3600;
+            var endTime = startTime.AddHours(codingSessionHours).AddMinutes(codingSessionMinutes).AddSeconds(codingSessionSeconds);
+            int codingSessionDurationInSeconds = codingSessionHours * 3600 + codingSessionMinutes * 60 + codingSessionSeconds;
 
             using var command = new SqliteCommand(insertRecordCommand, connection);
             command.Parameters.AddWithValue("@startTime", startTime);

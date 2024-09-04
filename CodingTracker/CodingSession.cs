@@ -1,11 +1,13 @@
+using System.Globalization;
+
 namespace CodingTracker;
 
-public class CodingSession(int id, DateTime startTime, DateTime endTime, int duration)
+public class CodingSession(long id, string startTime, string endTime, long duration)
 {
-    private int _id = id;
-    private DateTime _startTime = startTime;
-    private DateTime _endTime = endTime;
-    private int _duration = duration;
+    public long Id = id;
+    public string StartTime = startTime;
+    public string EndTime = endTime;
+    public long Duration = duration;
 
     public static int CalculateDuration(DateTime startTime, DateTime endTime)
     {

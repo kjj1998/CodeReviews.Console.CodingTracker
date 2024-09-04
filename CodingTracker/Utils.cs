@@ -6,8 +6,10 @@ namespace CodingTracker;
 public static class Utils
 {
     private const string AppSettingsFileName = "appsettings.json";
+
     private static readonly string AppSettingsPath = FindDirectoryOfFile(
         Directory.GetCurrentDirectory(), AppSettingsFileName) + "/" + AppSettingsFileName;
+
     public static readonly IConfigurationRoot Config = new ConfigurationBuilder()
         .AddJsonFile(AppSettingsPath)
         .AddEnvironmentVariables()
@@ -32,10 +34,22 @@ public static class Utils
                 // Reached the root of the filesystem
                 break;
             }
+
             currentDirectory = parentDirectory.FullName;
         }
 
         // File not found
         return null;
+    }
+
+    public static string ConvertSecondsToHoursMinutesSeconds(int duration)
+    {
+        var timespan = TimeSpan.FromSeconds(duration);
+
+        int hours = timespan.Hours;
+        int minutes = timespan.Minutes;
+        int seconds = timespan.Seconds;
+
+        return $"{hours} h {minutes} min {seconds} sec";
     }
 }
