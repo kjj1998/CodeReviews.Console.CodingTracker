@@ -1,5 +1,7 @@
-using Microsoft.Data.Sqlite;
+using System.Globalization;
 using Microsoft.Extensions.Configuration;
+using Spectre.Console;
+// ReSharper disable InvertIf
 
 namespace CodingTracker;
 
@@ -51,5 +53,32 @@ public static class Utils
         int seconds = timespan.Seconds;
 
         return $"{hours} h {minutes} min {seconds} sec";
+    }
+
+    public static ValidationResult ValidateDateTime(string dateTimeString, string dateTimeFormat, string type, DateTime startTime)
+    {
+        bool checkDateTime = DateTime.TryParseExact(
+            dateTimeString, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime);
+
+        if (checkDateTime)
+        {
+            if (type == "end time")
+            {
+                return dateTime < startTime ? 
+                    ValidationResult.Error("End time must be greater than start time.") : 
+                    ValidationResult.Success();
+            }
+
+            return ValidationResult.Success();
+        }
+
+        return ValidationResult.Error($"Please enter a valid date-time in the format {dateTimeFormat}.");
+    }
+    
+    public static int CalculateDuration(DateTime startTime, DateTime endTime)
+    {
+        var difference = endTime - startTime;
+
+        return difference.Seconds;
     }
 }

@@ -14,7 +14,7 @@ public static class Display
         Console.WriteLine("A summary of all of your coding sessions can also be viewed.");
     }
 
-    public static string MenuDisplay()
+    public static char MenuDisplay()
     {
         var selectionPrompt = new SelectionPrompt<string>
         {
@@ -33,11 +33,11 @@ public static class Display
         ]);
 
         string option = AnsiConsole.Prompt(selectionPrompt);
-        option = LowerCaseFirstWord(option);
+        string message = LowerCaseFirstWord(option.Substring(3, option.Length - 3));
         
-        AnsiConsole.WriteLine($"\nYou have chosen to {option}.");
+        AnsiConsole.WriteLine($"\nYou have chosen to {message}.");
 
-        return option;
+        return option.ToCharArray()[0];
     }
 
     private static string LowerCaseFirstWord(string input)

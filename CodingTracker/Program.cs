@@ -1,5 +1,5 @@
-﻿using CodingTracker;
-using Dapper;
+﻿using System.Globalization;
+using CodingTracker;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
 
@@ -12,7 +12,7 @@ try
 
     while (exitApp == false)
     {
-        char option = Display.MenuDisplay().ToCharArray()[0];
+        char option = Display.MenuDisplay();
 
         switch (option)
         {
@@ -20,6 +20,7 @@ try
                 Respository.ViewAllRecords(connection);
                 break;
             case '2':
+                Respository.InsertRecord(connection);
                 break;
             case '3':
                 break;

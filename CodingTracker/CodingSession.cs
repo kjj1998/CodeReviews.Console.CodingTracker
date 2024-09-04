@@ -2,24 +2,10 @@ using System.Globalization;
 
 namespace CodingTracker;
 
-public class CodingSession(long id, string startTime, string endTime, long duration)
+public class CodingSession()
 {
-    public long Id = id;
-    public string StartTime = startTime;
-    public string EndTime = endTime;
-    public long Duration = duration;
-
-    public static int CalculateDuration(DateTime startTime, DateTime endTime)
-    {
-        var difference = endTime - startTime;
-
-        return difference.Seconds;
-    }
-
-    public static bool CheckEndTimeGreaterThanStartTime(DateTime startTime, DateTime endTime)
-    {
-        var difference = endTime - startTime;
-
-        return difference.Seconds >= 0;
-    }
+    public long Id { get; init; }
+    public DateTime? StartTime { get; init; }
+    public DateTime? EndTime { get; init; }
+    public long Duration { get; init; }
 }
