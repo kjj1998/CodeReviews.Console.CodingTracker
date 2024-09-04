@@ -1,3 +1,4 @@
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 
 namespace CodingTracker;
@@ -5,37 +6,36 @@ namespace CodingTracker;
 public static class Utils
 {
     private const string AppSettingsFileName = "appsettings.json";
-    private static readonly string ProjectRootDirectory = GetProjectRootDirectory();
-    private static readonly string AppSettingsPath = ProjectRootDirectory + "/" + AppSettingsFileName;
-    private static readonly IConfigurationRoot Config = new ConfigurationBuilder()
+    private static readonly string AppSettingsPath = FindDirectoryOfFile(
+        Directory.GetCurrentDirectory(), AppSettingsFileName) + "/" + AppSettingsFileName;
+    public static readonly IConfigurationRoot Config = new ConfigurationBuilder()
         .AddJsonFile(AppSettingsPath)
         .AddEnvironmentVariables()
         .Build();
 
-    private static string GetProjectRootDirectory()
+    public static string? FindDirectoryOfFile(string startingDirectory, string fileName)
     {
-        string curPath = Directory.GetCurrentDirectory();
-        var directoryInfo = Directory.GetParent(curPath);
+        string currentDirectory = startingDirectory;
 
-        for (int i = 0; i < 2; i++)
+        while (true)
         {
-            if (directoryInfo != null)
+            string filePath = Path.Combine(currentDirectory, fileName);
+            if (File.Exists(filePath))
             {
-                directoryInfo = directoryInfo.Parent;
+                return currentDirectory;
             }
-            else
+
+            // Move to the parent directory
+            var parentDirectory = Directory.GetParent(currentDirectory);
+            if (parentDirectory == null)
             {
+                // Reached the root of the filesystem
                 break;
             }
+            currentDirectory = parentDirectory.FullName;
         }
 
-        return directoryInfo?.FullName ?? string.Empty;
-    }
-
-    public static string GetDatabaseNameFromConfig()
-    {
-        var section = Config.GetSection("Database:Name");
-
-        return section.Value ?? string.Empty;
+        // File not found
+        return null;
     }
 }
