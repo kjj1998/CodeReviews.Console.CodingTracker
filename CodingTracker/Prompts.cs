@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace CodingTracker;
 
-public class Prompts
+public static class Prompts
 {
     private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
     
@@ -22,4 +22,17 @@ public class Prompts
 
         return dateTime;
     }
+
+    public static int RecordSelectionPrompt(HashSet<int> recordIds)
+    {
+        var idPrompt = new TextPrompt<int>(
+            "Enter the [aqua bold]id[/] of the coding session " +
+            "which you want to [aqua bold]edit[/]: ")
+            .Validate(value => Utils.ValidateId(value, recordIds))
+            .PromptStyle(new Style(foreground:Color.Aqua, decoration:Decoration.Bold));
+
+        int idOfSelectedRecord = AnsiConsole.Prompt(idPrompt);
+
+        return idOfSelectedRecord;
+    } 
 }

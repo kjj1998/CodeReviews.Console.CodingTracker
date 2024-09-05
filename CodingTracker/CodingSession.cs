@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace CodingTracker;
 
 public class CodingSession()

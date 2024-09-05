@@ -2,7 +2,7 @@ using Microsoft.Data.Sqlite;
 
 namespace CodingTracker;
 
-public class StartUp
+public static class StartUp
 {
     public static SqliteConnection SystemStartUpCheck()
     {

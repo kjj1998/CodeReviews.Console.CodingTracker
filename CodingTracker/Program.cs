@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using CodingTracker;
+﻿using CodingTracker;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
 
@@ -17,12 +16,13 @@ try
         switch (option)
         {
             case '1':
-                Respository.ViewAllRecords(connection);
+                Repository.ViewAllRecords(connection);
                 break;
             case '2':
-                Respository.InsertRecord(connection);
+                Repository.InsertRecord(connection);
                 break;
             case '3':
+                Repository.UpdateRecord(connection);
                 break;
             case '4':
                 break;

@@ -74,11 +74,19 @@ public static class Utils
 
         return ValidationResult.Error($"Please enter a valid date-time in the format {dateTimeFormat}.");
     }
+
+    public static ValidationResult ValidateId(int id, HashSet<int> recordIds)
+    {
+        return recordIds.Contains(id) ? 
+            ValidationResult.Success() : 
+            ValidationResult.Error($"Please enter a valid id that is shown in the table above.");
+    }
     
     public static int CalculateDuration(DateTime startTime, DateTime endTime)
     {
         var difference = endTime - startTime;
+        int durationInSeconds = difference.Hours * 3600 + difference.Minutes * 60 + difference.Seconds;
 
-        return difference.Seconds;
+        return durationInSeconds;
     }
 }
