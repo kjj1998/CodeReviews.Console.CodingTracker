@@ -85,27 +85,56 @@ public static class Helper
     public static void GetOverallStatistics(SqliteConnection connection)
     {
         int totalNumOfCodingSessions = GetTotalNumOfCodingSessions(connection);
-        string totalTimeSpentCodingInHoursMinutesSeconds = GetTotalTimeSpentCoding(connection);
+        int totalTimeSpentCodingInSeconds = GetTotalTimeSpentCoding(connection);
+        string totalTimeSpentCodingInHoursMinutesSeconds = 
+            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInSeconds);
+        int averageDuration = (int) Math.Round(totalTimeSpentCodingInSeconds / (double)totalNumOfCodingSessions);
+        string averageDurationInHoursMinutesSeconds = Utils.Utils.ConvertSecondsToHoursMinutesSeconds(averageDuration);
+        
         int totalNumOfCodingSessionsInCurrentYear = GetTotalNumOfCodingSessionsInTheCurrentYear(connection);
-        string totalTimeSpentCodingInCurrentYear = GetTotalTimeSpentCodingInTheCurrentYear(connection);
+        int totalTimeSpentCodingInCurrentYear = GetTotalTimeSpentCodingInTheCurrentYear(connection);
+        string totalTimeSpentCodingInCurrentYearInHoursMinutesSeconds =
+            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentYear);
+        int averageDurationSpentCodingInCurrentYear = 
+            (int) Math.Round(totalTimeSpentCodingInCurrentYear / (double)totalNumOfCodingSessionsInCurrentYear);
+        string averageDurationSpentCodingInCurrentYearInHms =
+            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentYear);
+        
         int totalNumOfCodingSessionsInCurrentMonth = GetTotalNumOfCodingSessionsInTheCurrentMonth(connection);
-        string totalTimeSpentCodingInCurrentMonth = GetTotalTimeSpentCodingInTheCurrentMonth(connection);
+        int totalTimeSpentCodingInCurrentMonth = GetTotalTimeSpentCodingInTheCurrentMonth(connection);
+        string totalTimeSpentCodingInCurrentMonthInHms =
+            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentMonth);
+        int averageDurationSpentCodingInCurrentMonth
+            = (int)Math.Round(totalTimeSpentCodingInCurrentMonth / (double)totalNumOfCodingSessionsInCurrentMonth);
+        string averageDurationSpentCodingInCurrentMonthInHms =
+            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentMonth);
+        
         int totalNumOfCodingSessionsInCurrentWeek = GetTotalNumOfCodingSessionsInTheCurrentWeek(connection);
-        string totalTimeSpentCodingInCurrentWeek = GetTotalTimeSpentCodingInTheCurrentWeek(connection);
+        int totalTimeSpentCodingInCurrentWeek = GetTotalTimeSpentCodingInTheCurrentWeek(connection);
+        string totalTimeSpentCodingInCurrentWeekInHms =
+            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentWeek);
+        int averageDurationSpentCodingInCurrentWeek =
+            (int)Math.Round(totalTimeSpentCodingInCurrentWeek / (double)totalNumOfCodingSessionsInCurrentWeek);
+        string averageDurationSpentCodingInCurrentWeekInHms =
+            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentWeek);
 
         var rows = new List<Text>
         {
             new($"Total overall number of coding sessions: \t\t{totalNumOfCodingSessions}"),
             new($"\nTotal overall duration spent coding: \t\t\t{totalTimeSpentCodingInHoursMinutesSeconds}"),
+            new($"\nAverage time spent coding per session: \t\t\t{averageDurationInHoursMinutesSeconds}"),
             new("\n"),
             new($"\nTotal number of coding sessions in the current year: \t{totalNumOfCodingSessionsInCurrentYear}"),
-            new($"\nTotal duration spent coding in the current year: \t{totalTimeSpentCodingInCurrentYear}"),
+            new($"\nTotal duration spent coding in the current year: \t{totalTimeSpentCodingInCurrentYearInHoursMinutesSeconds}"),
+            new($"\nAverage time spent coding in the current year: \t\t{averageDurationSpentCodingInCurrentYearInHms}"),
             new("\n"),
             new($"\nTotal number of coding sessions in the current month: \t{totalNumOfCodingSessionsInCurrentMonth}"),
-            new($"\nTotal duration spent coding in the current month: \t{totalTimeSpentCodingInCurrentMonth}"),
+            new($"\nTotal duration spent coding in the current month: \t{totalTimeSpentCodingInCurrentMonthInHms}"),
+            new($"\nAverage time spent coding in the current month: \t{averageDurationSpentCodingInCurrentMonthInHms}"),
             new("\n"),
             new($"\nTotal number of coding sessions in the current week: \t{totalNumOfCodingSessionsInCurrentWeek}"),
-            new($"\nTotal duration spent coding in the current week: \t{totalTimeSpentCodingInCurrentWeek}"),
+            new($"\nTotal duration spent coding in the current week: \t{totalTimeSpentCodingInCurrentWeekInHms}"),
+            new($"\nAverage time spent coding in the current month: \t{averageDurationSpentCodingInCurrentWeekInHms}"),
             new("\n")
         };
         
@@ -116,13 +145,11 @@ public static class Helper
         }
     }
     
-     private static string GetTotalTimeSpentCoding(SqliteConnection connection)
+     private static int GetTotalTimeSpentCoding(SqliteConnection connection)
     {
         int totalTimeSpentCodingInSeconds = connection.ExecuteScalar<int>(QueriesAndCommands.GetTotalTimeSpentCoding);
-        string totalTimeSpentCodingInHoursMinutesSeconds = 
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInSeconds);
 
-        return totalTimeSpentCodingInHoursMinutesSeconds;
+        return totalTimeSpentCodingInSeconds;
     }
 
     private static int GetTotalNumOfCodingSessions(SqliteConnection connection)
@@ -132,7 +159,7 @@ public static class Helper
         return totalNumOfCodingSessions;
     }
 
-    private static string GetTotalTimeSpentCodingInTheCurrentYear(SqliteConnection connection)
+    private static int GetTotalTimeSpentCodingInTheCurrentYear(SqliteConnection connection)
     {
         int currentYear = DateTime.Today.Year;
         var start = new DateTime(currentYear, 1, 1);
@@ -141,7 +168,7 @@ public static class Helper
         return GetTotalTimeSpentCodingWithinATimePeriod(connection, start, end);
     }
 
-    private static string GetTotalTimeSpentCodingInTheCurrentMonth(SqliteConnection connection)
+    private static int GetTotalTimeSpentCodingInTheCurrentMonth(SqliteConnection connection)
     {
         var today = DateTime.Today;
         var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
@@ -150,7 +177,7 @@ public static class Helper
         return GetTotalTimeSpentCodingWithinATimePeriod(connection, firstDayOfMonth, lastDayOfMonth);
     }
 
-    private static string GetTotalTimeSpentCodingInTheCurrentWeek(SqliteConnection connection)
+    private static int GetTotalTimeSpentCodingInTheCurrentWeek(SqliteConnection connection)
     {
         var today = DateTime.Today;
         var currentDayOfWeek = today.DayOfWeek;
@@ -160,17 +187,15 @@ public static class Helper
         return GetTotalTimeSpentCodingWithinATimePeriod(connection, startOfWeek, endOfWeek);
     }
     
-    private static string GetTotalTimeSpentCodingWithinATimePeriod(SqliteConnection connection, DateTime start,
+    private static int GetTotalTimeSpentCodingWithinATimePeriod(SqliteConnection connection, DateTime start,
         DateTime end)
     {
         var condition = new CodingSession() { StartTime = start, EndTime = end };
 
         int totalTimeSpentCodingWithinATimePeriodInSeconds =
             connection.ExecuteScalar<int>(QueriesAndCommands.GetTotalTimeSpentCodingWithinATimePeriod, condition);
-        string totalTimeSpentCodingWithinATimePeriodInHoursMinutesSeconds =
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingWithinATimePeriodInSeconds);
 
-        return totalTimeSpentCodingWithinATimePeriodInHoursMinutesSeconds;
+        return totalTimeSpentCodingWithinATimePeriodInSeconds;
     }
 
     private static int GetTotalNumOfCodingSessionsInTheCurrentYear(SqliteConnection connection)

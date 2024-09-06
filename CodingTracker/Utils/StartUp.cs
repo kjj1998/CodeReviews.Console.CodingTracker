@@ -1,3 +1,4 @@
+using CodingTracker.Repository;
 using Microsoft.Data.Sqlite;
 
 namespace CodingTracker.Utils;
@@ -6,9 +7,9 @@ public static class StartUp
 {
     public static SqliteConnection SystemStartUpCheck()
     {
-        string dbName =  CodingTracker.Utils.Utils.Config.GetSection("Database:Name").Value ?? string.Empty;
-        string dbPath = CodingTracker.Utils.Utils.FindDirectoryOfFile(Directory.GetCurrentDirectory(), "Program.cs") + "/" + dbName;
-        string tableName = CodingTracker.Utils.Utils.Config.GetSection("Database:TableName").Value ?? string.Empty;
+        string dbName =  Utils.Config.GetSection("Database:Name").Value ?? string.Empty;
+        string dbPath = Utils.FindDirectoryOfFile(Directory.GetCurrentDirectory(), "Program.cs") + "/" + dbName;
+        string tableName = Utils.Config.GetSection("Database:TableName").Value ?? string.Empty;
         
         Console.WriteLine(dbPath);
         
@@ -33,9 +34,7 @@ public static class StartUp
     
     private static bool CheckTableExists(SqliteConnection connection, string tableName)
     {
-        string checkTableExistsQuery = CodingTracker.Utils.Utils.Config.GetSection("Database:Queries:CheckTableExists").Value ?? string.Empty;
-    
-        using var command = new SqliteCommand(checkTableExistsQuery, connection);
+        using var command = new SqliteCommand(QueriesAndCommands.CheckTableExists, connection);
         command.Parameters.AddWithValue("@tableName", tableName);
         using var reader = command.ExecuteReader();
 
@@ -44,9 +43,7 @@ public static class StartUp
 
     private static void CreateTable(SqliteConnection connection, string tableName)
     {
-        string createTableCommand = CodingTracker.Utils.Utils.Config.GetSection("Database:Commands:CreateTable").Value ?? string.Empty;
-        
-        using var command = new SqliteCommand(createTableCommand, connection);
+        using var command = new SqliteCommand(QueriesAndCommands.CreateTable, connection);
         command.Parameters.AddWithValue("@tableName", tableName);
 
         command.ExecuteNonQuery();
@@ -59,7 +56,6 @@ public static class StartUp
         int prevMonth = today.Month - 1;
         int prevYear = today.Year;
         var random = new Random();
-        string insertRecordCommand = CodingTracker.Utils.Utils.Config.GetSection("Database:Commands:InsertRecord").Value ?? string.Empty;
 
         if (prevMonth < 1)
         {
@@ -82,7 +78,7 @@ public static class StartUp
             var endTime = startTime.AddHours(codingSessionHours).AddMinutes(codingSessionMinutes).AddSeconds(codingSessionSeconds);
             int codingSessionDurationInSeconds = codingSessionHours * 3600 + codingSessionMinutes * 60 + codingSessionSeconds;
 
-            using var command = new SqliteCommand(insertRecordCommand, connection);
+            using var command = new SqliteCommand(QueriesAndCommands.InsertRecord, connection);
             command.Parameters.AddWithValue("@startTime", startTime);
             command.Parameters.AddWithValue("@endTime", endTime);
             command.Parameters.AddWithValue("@duration", codingSessionDurationInSeconds);
