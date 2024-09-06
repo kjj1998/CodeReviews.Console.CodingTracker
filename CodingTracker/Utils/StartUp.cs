@@ -1,14 +1,14 @@
 using Microsoft.Data.Sqlite;
 
-namespace CodingTracker;
+namespace CodingTracker.Utils;
 
 public static class StartUp
 {
     public static SqliteConnection SystemStartUpCheck()
     {
-        string dbName =  Utils.Config.GetSection("Database:Name").Value ?? string.Empty;
-        string dbPath = Utils.FindDirectoryOfFile(Directory.GetCurrentDirectory(), "Program.cs") + "/" + dbName;
-        string tableName = Utils.Config.GetSection("Database:TableName").Value ?? string.Empty;
+        string dbName =  CodingTracker.Utils.Utils.Config.GetSection("Database:Name").Value ?? string.Empty;
+        string dbPath = CodingTracker.Utils.Utils.FindDirectoryOfFile(Directory.GetCurrentDirectory(), "Program.cs") + "/" + dbName;
+        string tableName = CodingTracker.Utils.Utils.Config.GetSection("Database:TableName").Value ?? string.Empty;
         
         Console.WriteLine(dbPath);
         
@@ -33,7 +33,7 @@ public static class StartUp
     
     private static bool CheckTableExists(SqliteConnection connection, string tableName)
     {
-        string checkTableExistsQuery = Utils.Config.GetSection("Database:Queries:CheckTableExists").Value ?? string.Empty;
+        string checkTableExistsQuery = CodingTracker.Utils.Utils.Config.GetSection("Database:Queries:CheckTableExists").Value ?? string.Empty;
     
         using var command = new SqliteCommand(checkTableExistsQuery, connection);
         command.Parameters.AddWithValue("@tableName", tableName);
@@ -44,7 +44,7 @@ public static class StartUp
 
     private static void CreateTable(SqliteConnection connection, string tableName)
     {
-        string createTableCommand = Utils.Config.GetSection("Database:Commands:CreateTable").Value ?? string.Empty;
+        string createTableCommand = CodingTracker.Utils.Utils.Config.GetSection("Database:Commands:CreateTable").Value ?? string.Empty;
         
         using var command = new SqliteCommand(createTableCommand, connection);
         command.Parameters.AddWithValue("@tableName", tableName);
@@ -59,7 +59,7 @@ public static class StartUp
         int prevMonth = today.Month - 1;
         int prevYear = today.Year;
         var random = new Random();
-        string insertRecordCommand = Utils.Config.GetSection("Database:Commands:InsertRecord").Value ?? string.Empty;
+        string insertRecordCommand = CodingTracker.Utils.Utils.Config.GetSection("Database:Commands:InsertRecord").Value ?? string.Empty;
 
         if (prevMonth < 1)
         {

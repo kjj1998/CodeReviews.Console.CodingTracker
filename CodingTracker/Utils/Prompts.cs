@@ -1,8 +1,7 @@
 using System.Globalization;
-using System.Runtime.Serialization;
 using Spectre.Console;
 
-namespace CodingTracker;
+namespace CodingTracker.Utils;
 
 public static class Prompts
 {
@@ -13,7 +12,7 @@ public static class Prompts
         var timePrompt = new TextPrompt<string>(
             $"Enter the [aqua bold]{type} (including date)[/] of your coding session in " +
             $"[aqua bold]{DateTimeFormat}[/] format: ")
-            .Validate(value => Utils.ValidateDateTime(value, DateTimeFormat, type, startTime))
+            .Validate(value => CodingTracker.Utils.Utils.ValidateDateTime(value, DateTimeFormat, type, startTime))
             .PromptStyle(new Style(foreground:Color.Aqua, decoration:Decoration.Bold));
         string dateTimeString = AnsiConsole.Prompt(timePrompt);
         
@@ -23,12 +22,12 @@ public static class Prompts
         return dateTime;
     }
 
-    public static int RecordSelectionPrompt(HashSet<int> recordIds)
+    public static int RecordSelectionPrompt(HashSet<int> recordIds, string action)
     {
         var idPrompt = new TextPrompt<int>(
             "Enter the [aqua bold]id[/] of the coding session " +
-            "which you want to [aqua bold]edit[/]: ")
-            .Validate(value => Utils.ValidateId(value, recordIds))
+            $"which you want to [aqua bold]{action}[/]: ")
+            .Validate(value => CodingTracker.Utils.Utils.ValidateId(value, recordIds))
             .PromptStyle(new Style(foreground:Color.Aqua, decoration:Decoration.Bold));
 
         int idOfSelectedRecord = AnsiConsole.Prompt(idPrompt);

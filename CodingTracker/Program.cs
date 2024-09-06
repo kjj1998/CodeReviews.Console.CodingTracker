@@ -1,4 +1,6 @@
 ﻿using CodingTracker;
+using CodingTracker.Repository;
+using CodingTracker.Utils;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
 
@@ -25,8 +27,10 @@ try
                 Repository.UpdateRecord(connection);
                 break;
             case '4':
+                Repository.DeleteRecord(connection);
                 break;
             case '5':
+                Repository.ViewCodingSessionsSummary(connection);
                 break;
             case '6':
                 exitApp = true;

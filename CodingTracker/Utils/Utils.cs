@@ -1,9 +1,10 @@
 using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using Spectre.Console;
+
 // ReSharper disable InvertIf
 
-namespace CodingTracker;
+namespace CodingTracker.Utils;
 
 public static class Utils
 {

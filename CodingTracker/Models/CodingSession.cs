@@ -1,4 +1,4 @@
-namespace CodingTracker;
+namespace CodingTracker.Models;
 
 public class CodingSession()
 {
