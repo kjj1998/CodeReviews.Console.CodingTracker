@@ -93,16 +93,8 @@ public static class Helper
 
     public static void UserAcknowledgement()
     {
-        bool readKeyToContinue = false;
-        
-        while (!readKeyToContinue)
-        {
-            Console.Write("Press enter to continue ... ");
-            string? readKey = Console.ReadLine();
-
-            if (readKey == null) continue;
-            readKeyToContinue = true;
-            Console.Clear();
-        }
+        Console.WriteLine("\nPress any key to continue ...");
+        Console.ReadKey(true);
+        Console.Clear();
     }
 }

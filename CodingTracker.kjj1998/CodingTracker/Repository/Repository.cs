@@ -125,4 +125,55 @@ public static class Repository
         
         Utils.Helper.UserAcknowledgement();
     }
+
+    public static void LiveCodingSession(SqliteConnection connection)
+    {
+        var startTime = DateTime.Now;
+        var cancellationTokenSource = new CancellationTokenSource();
+        var token = cancellationTokenSource.Token;
+        var endTime = DateTime.Now;
+        
+        Task.Run(() =>
+        {
+            while (!token.IsCancellationRequested)
+            {
+                if (Console.KeyAvailable)
+                {
+                    Console.ReadKey(true);
+                    cancellationTokenSource.Cancel();
+                    endTime = DateTime.Now;
+                }
+                Thread.Sleep(100);
+            }
+        }, token);
+        
+        int initialCursorLeft = Console.CursorLeft;
+        int initialCursorTop = Console.CursorTop;
+
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                var elapsedTime = DateTime.Now - startTime;
+                Console.SetCursorPosition(initialCursorLeft, initialCursorTop);
+                AnsiConsole.MarkupLine($@"Elapsed Time: [aqua bold]{elapsedTime:hh\:mm\:ss}[/]");
+                Console.SetCursorPosition(initialCursorLeft + 22, initialCursorTop);
+                Thread.Sleep(1000);
+            }
+        }
+        finally
+        {
+            Console.SetCursorPosition(initialCursorLeft, initialCursorTop);
+            Console.WriteLine($"Timer stopped. You have coded from {startTime.ToLongTimeString()} to {endTime.ToLongTimeString()}"); 
+            
+            int duration = Utils.Helper.CalculateDuration(startTime, endTime);
+            var codingSession = new CodingSession() { StartTime = startTime, EndTime = endTime, Duration = duration };
+            int rowsAffected = connection.Execute(QueriesAndCommands.InsertRecord, codingSession);
+
+            if (rowsAffected == 1)
+                AnsiConsole.MarkupLine("\n[steelblue1 bold]Live Coding Session successfully saved![/]");
+        }
+        
+        Utils.Helper.UserAcknowledgement();
+    }
 }

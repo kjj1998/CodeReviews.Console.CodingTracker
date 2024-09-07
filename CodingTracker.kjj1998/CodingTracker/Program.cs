@@ -33,6 +33,9 @@ try
                 Repository.ViewCodingSessionsSummary(connection);
                 break;
             case '6':
+                Repository.LiveCodingSession(connection);
+                break;
+            case '7':
                 exitApp = true;
                 break;
         }

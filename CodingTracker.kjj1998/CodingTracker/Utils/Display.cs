@@ -29,7 +29,8 @@ public static class Display
             "3. Update an existing coding session",
             "4. Delete an existing coding session",
             "5. View a summary of your coding sessions",
-            "6. Exit the application"
+            "6. Start a live coding session",
+            "7. Exit the application"
         ]);
 
         string option = AnsiConsole.Prompt(selectionPrompt);
