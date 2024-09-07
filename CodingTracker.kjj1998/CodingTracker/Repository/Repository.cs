@@ -10,7 +10,9 @@ public static class Repository
 { 
     public static void ViewAllRecords(SqliteConnection connection)
     {
-        var sessions = Helper.GetCodingSessions(connection);
+        char filterOption = Prompts.FilterSelectionPrompt();
+        char sortingOption = Prompts.SortingSelectionPrompt();
+        var sessions = Helper.GetCodingSessions(connection, filterOption, sortingOption);
 
         if (sessions.Count == 0)
             Console.WriteLine("\nThere are no coding sessions! Please enter some!");

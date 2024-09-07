@@ -33,5 +33,34 @@ public static class Prompts
         int idOfSelectedRecord = AnsiConsole.Prompt(idPrompt);
 
         return idOfSelectedRecord;
-    } 
+    }
+
+    public static char FilterSelectionPrompt()
+    {
+        string filterOption = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Select your [green]viewing option[/]")
+                .PageSize(10)
+                .MoreChoicesText("[grey](Move up and down to reveal more options)[/]")
+                .AddChoices([
+                    "1. View all records", "2. View records in the current year", 
+                    "3. View records in the current month", "4. View records in the current week"
+                ]));
+
+        return filterOption.ToCharArray()[0];
+    }
+
+    public static char SortingSelectionPrompt()
+    {
+        string sortingOption = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Select your [green]sorting option[/]")
+                .PageSize(10)
+                .MoreChoicesText("[grey](Move up and down to reveal more options)[/]")
+                .AddChoices([
+                    "1. Ascending", "2. Descending"
+                ]));
+
+        return sortingOption.ToCharArray()[0];
+    }
 }

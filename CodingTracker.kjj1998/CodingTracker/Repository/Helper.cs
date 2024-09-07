@@ -1,4 +1,5 @@
 using CodingTracker.Models;
+using CodingTracker.Utils;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
@@ -7,9 +8,38 @@ namespace CodingTracker.Repository;
 
 public static class Helper
 {
-    public static List<CodingSession> GetCodingSessions(SqliteConnection connection)
+    public static List<CodingSession> GetCodingSessions(
+        SqliteConnection connection, 
+        char filterOption = '1', 
+        char sortingOption = '1')
     {
-        var sessions = connection.Query<CodingSession>(QueriesAndCommands.ViewAllRecords).ToList();
+        string query = "";
+        var sessions = new List<CodingSession>();
+
+        query = filterOption switch
+        {
+            '1' => QueriesAndCommands.ViewAllRecords,
+            _ => QueriesAndCommands.ViewAllRecordsWithinATimePeriod
+        };
+
+        switch (sortingOption)
+        {
+            case '1':
+                query += " ORDER BY startTime ASC";
+                break;
+            case '2':
+                query += " ORDER BY startTime DESC";
+                break;
+        }
+
+        sessions = filterOption switch
+        {
+            '1' => GetAllRecords(connection, query),
+            '2' => GetAllRecordsInCurrentYear(connection, query),
+            '3' => GetAllRecordsInCurrentMonth(connection, query),
+            '4' => GetAllRecordsInCurrentWeek(connection, query),
+            _ => sessions
+        };
 
         return sessions;
     }
@@ -234,5 +264,55 @@ public static class Helper
             connection.ExecuteScalar<int>(QueriesAndCommands.GetTotalNumOfCodingSessionsWithinATimePeriod, condition);
 
         return totalNumOfCodingSessionsWithinATimePeriod;
+    }
+
+    private static List<CodingSession> GetAllRecords(SqliteConnection connection, string query)
+    {
+        var allCodingSessions = 
+            connection.Query<CodingSession>(query).ToList();
+
+        return allCodingSessions;
+    }
+
+    private static List<CodingSession> GetAllRecordsInCurrentYear(SqliteConnection connection, string query)
+    {
+        int currentYear = DateTime.Today.Year;
+        var start = new DateTime(currentYear, 1, 1);
+        var end = new DateTime(currentYear, 12, 31);
+
+        return GetAllRecordsWithinATimePeriod(connection, query, start, end);
+    }
+
+    private static List<CodingSession> GetAllRecordsInCurrentMonth(SqliteConnection connection, string query)
+    {
+        var today = DateTime.Today;
+        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
+        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+        
+        return GetAllRecordsWithinATimePeriod(connection, query, firstDayOfMonth, lastDayOfMonth);
+    }
+
+    private static List<CodingSession> GetAllRecordsInCurrentWeek(SqliteConnection connection, string query)
+    {
+        var today = DateTime.Today;
+        var currentDayOfWeek = today.DayOfWeek;
+        var startOfWeek = today.AddDays(-((int)currentDayOfWeek + 6) % 7);
+        var endOfWeek = startOfWeek.AddDays(6);
+
+        return GetAllRecordsWithinATimePeriod(connection, query, startOfWeek, endOfWeek);
+    }
+
+    private static List<CodingSession> GetAllRecordsWithinATimePeriod(
+        SqliteConnection connection,
+        string query,
+        DateTime start, 
+        DateTime end)
+    {
+        var condition = new CodingSession() { StartTime = start, EndTime = end };
+        
+        var codingSessionsWithinATimePeriod = 
+            connection.Query<CodingSession>(query, condition).ToList();
+
+        return codingSessionsWithinATimePeriod;
     }
 }

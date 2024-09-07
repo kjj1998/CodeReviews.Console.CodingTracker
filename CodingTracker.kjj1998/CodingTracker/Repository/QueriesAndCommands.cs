@@ -10,8 +10,14 @@ public static class QueriesAndCommands
 
     public const string ViewAllRecords = """
                                          SELECT id, startTime, endTime, duration 
-                                         FROM coding_sessions;
+                                         FROM coding_sessions
                                          """;
+
+    public const string ViewAllRecordsWithinATimePeriod = """
+                                                 SELECT id, startTime, endTime, duration 
+                                                 FROM coding_sessions
+                                                 WHERE startTime>=@StartTime AND endTime<=@EndTime
+                                                 """;
 
     public const string GetTotalTimeSpentCoding = """
                                                   SELECT SUM(duration) AS totalDuration 
