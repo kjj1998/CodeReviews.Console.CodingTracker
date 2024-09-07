@@ -7,9 +7,9 @@ public static class StartUp
 {
     public static SqliteConnection SystemStartUpCheck()
     {
-        string dbName =  Utils.Config.GetSection("Database:Name").Value ?? string.Empty;
-        string dbPath = Utils.FindDirectoryOfFile(Directory.GetCurrentDirectory(), "Program.cs") + "/" + dbName;
-        string tableName = Utils.Config.GetSection("Database:TableName").Value ?? string.Empty;
+        string dbName =  Helper.Config.GetSection("Database:Name").Value ?? string.Empty;
+        string dbPath = Helper.FindDirectoryOfFile(Directory.GetCurrentDirectory(), "Program.cs") + "/" + dbName;
+        string tableName = Helper.Config.GetSection("Database:TableName").Value ?? string.Empty;
         
         Console.WriteLine(dbPath);
         

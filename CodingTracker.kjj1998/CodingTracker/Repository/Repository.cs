@@ -13,28 +13,26 @@ public static class Repository
         var sessions = Helper.GetCodingSessions(connection);
 
         if (sessions.Count == 0)
-        {
             Console.WriteLine("\nThere are no coding sessions! Please enter some!");
-        }
         else
-        {
             Helper.DisplayAllCodingSessions(sessions);
-        }
+
+        Utils.Helper.UserAcknowledgement();
     }
 
     public static async void InsertRecord(SqliteConnection connection)
     {
         var startTime = Prompts.DatePrompt("start time");
         var endTime = Prompts.DatePrompt("end time", startTime);
-        int duration = Utils.Utils.CalculateDuration(startTime, endTime);
+        int duration = Utils.Helper.CalculateDuration(startTime, endTime);
         
         var codingSession = new CodingSession() { StartTime = startTime, EndTime = endTime, Duration = duration };
         int rowsAffected = await connection.ExecuteAsync(QueriesAndCommands.InsertRecord, codingSession);
 
         if (rowsAffected == 1)
-        {
             AnsiConsole.MarkupLine("\n[steelblue1 bold]Coding Session successfully entered![/]");
-        }
+        
+        Utils.Helper.UserAcknowledgement();
     }
 
     public static async void UpdateRecord(SqliteConnection connection)
@@ -61,7 +59,7 @@ public static class Repository
 
             var startTime = Prompts.DatePrompt("start time");
             var endTime = Prompts.DatePrompt("end time", startTime);
-            int duration = Utils.Utils.CalculateDuration(startTime, endTime);
+            int duration = Utils.Helper.CalculateDuration(startTime, endTime);
             
             var updatedCodingSession = new CodingSession()
             {
@@ -74,10 +72,9 @@ public static class Repository
             int rowsAffected = await connection.ExecuteAsync(QueriesAndCommands.UpdateRecord, updatedCodingSession);
 
             if (rowsAffected == 1)
-            {
-                AnsiConsole.MarkupLine(
-                    $"\n[steelblue1 bold]Coding Session with id {recordToEdit} successfully updated![/]");
-            }
+                AnsiConsole.MarkupLine($"\n[steelblue1 bold]Coding Session with id {recordToEdit} successfully updated![/]");
+            
+            Utils.Helper.UserAcknowledgement();
         }
     }
 
@@ -105,10 +102,9 @@ public static class Repository
             int rowsAffected = await connection.ExecuteAsync(QueriesAndCommands.DeleteRecord, codingSessionToBeDeleted);
 
             if (rowsAffected == 1)
-            {
-                AnsiConsole.MarkupLine(
-                    $"\n[steelblue1 bold]Coding Session with id {recordToDelete} successfully deleted![/]");
-            }
+                AnsiConsole.MarkupLine($"\n[steelblue1 bold]Coding Session with id {recordToDelete} successfully deleted![/]");
+            
+            Utils.Helper.UserAcknowledgement();
         }
     }
 
@@ -126,5 +122,7 @@ public static class Repository
             Console.WriteLine();
             Helper.DisplayBreakdownByMonthForCurrentYear(connection);
         }
+        
+        Utils.Helper.UserAcknowledgement();
     }
 }

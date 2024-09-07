@@ -6,7 +6,7 @@ using Spectre.Console;
 
 namespace CodingTracker.Utils;
 
-public static class Utils
+public static class Helper
 {
     private const string AppSettingsFileName = "appsettings.json";
 
@@ -89,5 +89,20 @@ public static class Utils
         int durationInSeconds = difference.Hours * 3600 + difference.Minutes * 60 + difference.Seconds;
 
         return durationInSeconds;
+    }
+
+    public static void UserAcknowledgement()
+    {
+        bool readKeyToContinue = false;
+        
+        while (!readKeyToContinue)
+        {
+            Console.Write("Press enter to continue ... ");
+            string? readKey = Console.ReadLine();
+
+            if (readKey == null) continue;
+            readKeyToContinue = true;
+            Console.Clear();
+        }
     }
 }

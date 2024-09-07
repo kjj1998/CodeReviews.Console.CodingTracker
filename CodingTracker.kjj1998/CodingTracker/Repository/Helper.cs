@@ -32,7 +32,7 @@ public static class Helper
                 new Markup($"{session.Id}"),
                 new Markup($"{session.StartTime}"),
                 new Markup($"{session.EndTime}"),
-                new Markup($"{Utils.Utils.ConvertSecondsToHoursMinutesSeconds(Convert.ToInt32(session.Duration))}"));
+                new Markup($"{Utils.Helper.ConvertSecondsToHoursMinutesSeconds(Convert.ToInt32(session.Duration))}"));
         }
 
         Console.WriteLine();
@@ -87,36 +87,36 @@ public static class Helper
         int totalNumOfCodingSessions = GetTotalNumOfCodingSessions(connection);
         int totalTimeSpentCodingInSeconds = GetTotalTimeSpentCoding(connection);
         string totalTimeSpentCodingInHoursMinutesSeconds = 
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInSeconds);
+            Utils.Helper.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInSeconds);
         int averageDuration = (int) Math.Round(totalTimeSpentCodingInSeconds / (double)totalNumOfCodingSessions);
-        string averageDurationInHoursMinutesSeconds = Utils.Utils.ConvertSecondsToHoursMinutesSeconds(averageDuration);
+        string averageDurationInHoursMinutesSeconds = Utils.Helper.ConvertSecondsToHoursMinutesSeconds(averageDuration);
         
         int totalNumOfCodingSessionsInCurrentYear = GetTotalNumOfCodingSessionsInTheCurrentYear(connection);
         int totalTimeSpentCodingInCurrentYear = GetTotalTimeSpentCodingInTheCurrentYear(connection);
         string totalTimeSpentCodingInCurrentYearInHoursMinutesSeconds =
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentYear);
+            Utils.Helper.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentYear);
         int averageDurationSpentCodingInCurrentYear = 
             (int) Math.Round(totalTimeSpentCodingInCurrentYear / (double)totalNumOfCodingSessionsInCurrentYear);
         string averageDurationSpentCodingInCurrentYearInHms =
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentYear);
+            Utils.Helper.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentYear);
         
         int totalNumOfCodingSessionsInCurrentMonth = GetTotalNumOfCodingSessionsInTheCurrentMonth(connection);
         int totalTimeSpentCodingInCurrentMonth = GetTotalTimeSpentCodingInTheCurrentMonth(connection);
         string totalTimeSpentCodingInCurrentMonthInHms =
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentMonth);
+            Utils.Helper.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentMonth);
         int averageDurationSpentCodingInCurrentMonth
             = (int)Math.Round(totalTimeSpentCodingInCurrentMonth / (double)totalNumOfCodingSessionsInCurrentMonth);
         string averageDurationSpentCodingInCurrentMonthInHms =
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentMonth);
+            Utils.Helper.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentMonth);
         
         int totalNumOfCodingSessionsInCurrentWeek = GetTotalNumOfCodingSessionsInTheCurrentWeek(connection);
         int totalTimeSpentCodingInCurrentWeek = GetTotalTimeSpentCodingInTheCurrentWeek(connection);
         string totalTimeSpentCodingInCurrentWeekInHms =
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentWeek);
+            Utils.Helper.ConvertSecondsToHoursMinutesSeconds(totalTimeSpentCodingInCurrentWeek);
         int averageDurationSpentCodingInCurrentWeek =
             (int)Math.Round(totalTimeSpentCodingInCurrentWeek / (double)totalNumOfCodingSessionsInCurrentWeek);
         string averageDurationSpentCodingInCurrentWeekInHms =
-            Utils.Utils.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentWeek);
+            Utils.Helper.ConvertSecondsToHoursMinutesSeconds(averageDurationSpentCodingInCurrentWeek);
 
         var rows = new List<Text>
         {
