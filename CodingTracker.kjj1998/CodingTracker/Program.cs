@@ -1,4 +1,5 @@
 ﻿using CodingTracker;
+using CodingTracker.Controller;
 using CodingTracker.Repository;
 using CodingTracker.Utils;
 using Microsoft.Data.Sqlite;
@@ -18,24 +19,27 @@ try
         switch (option)
         {
             case '1':
-                Repository.ViewAllRecords(connection);
+                SessionController.ViewAllSessions(connection);
                 break;
             case '2':
-                Repository.InsertRecord(connection);
+                SessionController.InsertSession(connection);
                 break;
             case '3':
-                Repository.UpdateRecord(connection);
+                SessionController.UpdateSession(connection);
                 break;
             case '4':
-                Repository.DeleteRecord(connection);
+                SessionController.DeleteSession(connection);
                 break;
             case '5':
-                Repository.ViewCodingSessionsSummary(connection);
+                SessionController.ViewCodingSessionsSummary(connection);
                 break;
             case '6':
-                Repository.LiveCodingSession(connection);
+                SessionController.LiveCodingSession(connection);
                 break;
             case '7':
+                GoalController.SetCodingGoals(connection);
+                break;
+            case '8':
                 exitApp = true;
                 break;
         }

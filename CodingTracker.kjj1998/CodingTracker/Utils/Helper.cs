@@ -83,6 +83,13 @@ public static class Helper
             ValidationResult.Error($"Please enter a valid id that is shown in the table above.");
     }
     
+    public static ValidationResult ValidateId(long id, HashSet<long> recordIds)
+    {
+        return recordIds.Contains(id) ? 
+            ValidationResult.Success() : 
+            ValidationResult.Error($"Please enter a valid id that is shown in the table above.");
+    }
+    
     public static int CalculateDuration(DateTime startTime, DateTime endTime)
     {
         var difference = endTime - startTime;

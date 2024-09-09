@@ -1,45 +1,48 @@
-using CodingTracker.Models;
+using CodingTracker.Model;
+using CodingTracker.Repository;
 using CodingTracker.Utils;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
+using Helper = CodingTracker.Utils.Helper;
 
-namespace CodingTracker.Repository;
+namespace CodingTracker.Controller;
 
-public static class Repository
-{ 
-    public static void ViewAllRecords(SqliteConnection connection)
+public static class SessionController
+{
+    public static void ViewAllSessions(SqliteConnection connection)
     {
         char filterOption = Prompts.FilterSelectionPrompt();
         char sortingOption = Prompts.SortingSelectionPrompt();
-        var sessions = Helper.GetCodingSessions(connection, filterOption, sortingOption);
+        var sessions = CodingSessionRepo.GetCodingSessions(
+            connection, filterOption, sortingOption);
 
         if (sessions.Count == 0)
             Console.WriteLine("\nThere are no coding sessions! Please enter some!");
         else
-            Helper.DisplayAllCodingSessions(sessions);
+            CodingSessionRepo.DisplayAllCodingSessions(sessions);
 
-        Utils.Helper.UserAcknowledgement();
+        Helper.UserAcknowledgement();
     }
-
-    public static async void InsertRecord(SqliteConnection connection)
+    
+    public static void InsertSession(SqliteConnection connection)
     {
         var startTime = Prompts.DatePrompt("start time");
         var endTime = Prompts.DatePrompt("end time", startTime);
-        int duration = Utils.Helper.CalculateDuration(startTime, endTime);
+        int duration = Helper.CalculateDuration(startTime, endTime);
         
-        var codingSession = new CodingSession() { StartTime = startTime, EndTime = endTime, Duration = duration };
-        int rowsAffected = await connection.ExecuteAsync(QueriesAndCommands.InsertRecord, codingSession);
+        var session = new Session() { StartTime = startTime, EndTime = endTime, Duration = duration };
+        int rowsAffected = connection.Execute(Query.Session.InsertRecord, session);
 
         if (rowsAffected == 1)
             AnsiConsole.MarkupLine("\n[steelblue1 bold]Coding Session successfully entered![/]");
         
-        Utils.Helper.UserAcknowledgement();
+        Helper.UserAcknowledgement();
     }
 
-    public static async void UpdateRecord(SqliteConnection connection)
+    public static void UpdateSession(SqliteConnection connection)
     {
-        var sessions = Helper.GetCodingSessions(connection);
+        var sessions = CodingSessionRepo.GetCodingSessions(connection);
 
         if (sessions.Count == 0)
         {
@@ -47,42 +50,38 @@ public static class Repository
         }
         else
         {
-            HashSet<int> setOfRecordIds = [];
-            Helper.DisplayAllCodingSessions(sessions);
+            var sessionIds = sessions.Select(session => session.Id).ToHashSet();
+            CodingSessionRepo.DisplayAllCodingSessions(sessions);
+            long sessionToEdit = Prompts.SessionSelectionPrompt(sessionIds, "edit");
 
-            foreach (var session in sessions)
-            {
-                setOfRecordIds.Add(Convert.ToInt32(session.Id));
-            }
-
-            int recordToEdit = Prompts.RecordSelectionPrompt(setOfRecordIds, "edit");
             AnsiConsole.MarkupLine(
-                $"You have selected to edit the coding session with id [aqua bold]{recordToEdit}[/]");
+                $"You have selected to edit the coding session with id [aqua bold]{sessionToEdit}[/]");
 
             var startTime = Prompts.DatePrompt("start time");
             var endTime = Prompts.DatePrompt("end time", startTime);
-            int duration = Utils.Helper.CalculateDuration(startTime, endTime);
-            
-            var updatedCodingSession = new CodingSession()
+            int duration = Helper.CalculateDuration(startTime, endTime);
+
+            var updatedCodingSession = new Session()
             {
-                Id = recordToEdit,
+                Id = sessionToEdit,
                 StartTime = startTime,
                 EndTime = endTime,
                 Duration = duration
             };
 
-            int rowsAffected = await connection.ExecuteAsync(QueriesAndCommands.UpdateRecord, updatedCodingSession);
+            int rowsAffected = connection.Execute(Query.Session.UpdateSession, updatedCodingSession);
 
             if (rowsAffected == 1)
-                AnsiConsole.MarkupLine($"\n[steelblue1 bold]Coding Session with id {recordToEdit} successfully updated![/]");
-            
-            Utils.Helper.UserAcknowledgement();
+                AnsiConsole.MarkupLine($"\n[steelblue1 bold]Coding Session with " +
+                                       $"id {sessionToEdit} successfully updated![/]");
+
+            Helper.UserAcknowledgement();
         }
     }
 
-    public static async void DeleteRecord(SqliteConnection connection)
+    public static void DeleteSession(SqliteConnection connection)
     {
-        var sessions = Helper.GetCodingSessions(connection);
+        var sessions = CodingSessionRepo.GetCodingSessions(connection);
 
         if (sessions.Count == 0)
         {
@@ -90,29 +89,30 @@ public static class Repository
         }
         else
         {
-            HashSet<int> setOfRecordIds = [];
-            Helper.DisplayAllCodingSessions(sessions);
+            var sessionIds = sessions.Select(session => session.Id).ToHashSet();
+            CodingSessionRepo.DisplayAllCodingSessions(sessions);
 
             foreach (var session in sessions)
-                setOfRecordIds.Add(Convert.ToInt32(session.Id));
+                sessionIds.Add(Convert.ToInt32(session.Id));
 
-            int recordToDelete = Prompts.RecordSelectionPrompt(setOfRecordIds, "delete");
+            long sessionToDelete = Prompts.SessionSelectionPrompt(sessionIds, "delete");
             AnsiConsole.MarkupLine(
-                $"You have selected to delete the coding session with id [aqua bold]{recordToDelete}[/]");
+                $"You have selected to delete the coding session with id [aqua bold]{sessionToDelete}[/]");
 
-            var codingSessionToBeDeleted = new CodingSession() { Id = recordToDelete };
-            int rowsAffected = await connection.ExecuteAsync(QueriesAndCommands.DeleteRecord, codingSessionToBeDeleted);
+            var codingSessionToBeDeleted = new Session() { Id = sessionToDelete };
+            int rowsAffected = connection.Execute(Query.Session.DeleteSession, codingSessionToBeDeleted);
 
             if (rowsAffected == 1)
-                AnsiConsole.MarkupLine($"\n[steelblue1 bold]Coding Session with id {recordToDelete} successfully deleted![/]");
-            
-            Utils.Helper.UserAcknowledgement();
+                AnsiConsole.MarkupLine(
+                    $"\n[steelblue1 bold]Coding Session with id {sessionToDelete} successfully deleted![/]");
+
+            Helper.UserAcknowledgement();
         }
     }
-
+    
     public static void ViewCodingSessionsSummary(SqliteConnection connection)
     {
-        var sessions = Helper.GetCodingSessions(connection);
+        var sessions = CodingSessionRepo.GetCodingSessions(connection);
 
         if (sessions.Count == 0)
         {
@@ -120,15 +120,15 @@ public static class Repository
         }
         else
         {
-            Helper.GetOverallStatistics(connection);
+            CodingSessionRepo.DisplayStatistics(connection);
             Console.WriteLine();
-            Helper.DisplayBreakdownByMonthForCurrentYear(connection);
+            CodingSessionRepo.DisplayBreakdownByMonthForCurrentYear(connection);
         }
         
-        Utils.Helper.UserAcknowledgement();
+        Helper.UserAcknowledgement();
     }
-
-    public static void LiveCodingSession(SqliteConnection connection)
+    
+     public static void LiveCodingSession(SqliteConnection connection)
     {
         var startTime = DateTime.Now;
         var cancellationTokenSource = new CancellationTokenSource();
@@ -168,14 +168,14 @@ public static class Repository
             Console.SetCursorPosition(initialCursorLeft, initialCursorTop);
             Console.WriteLine($"Timer stopped. You have coded from {startTime.ToLongTimeString()} to {endTime.ToLongTimeString()}"); 
             
-            int duration = Utils.Helper.CalculateDuration(startTime, endTime);
-            var codingSession = new CodingSession() { StartTime = startTime, EndTime = endTime, Duration = duration };
-            int rowsAffected = connection.Execute(QueriesAndCommands.InsertRecord, codingSession);
+            int duration = Helper.CalculateDuration(startTime, endTime);
+            var codingSession = new Session() { StartTime = startTime, EndTime = endTime, Duration = duration };
+            int rowsAffected = connection.Execute(Query.Session.InsertRecord, codingSession);
 
             if (rowsAffected == 1)
                 AnsiConsole.MarkupLine("\n[steelblue1 bold]Live Coding Session successfully saved![/]");
         }
         
-        Utils.Helper.UserAcknowledgement();
+        Helper.UserAcknowledgement();
     }
 }

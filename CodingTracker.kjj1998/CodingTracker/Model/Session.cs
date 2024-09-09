@@ -1,6 +1,6 @@
-namespace CodingTracker.Models;
+namespace CodingTracker.Model;
 
-public class CodingSession()
+public class Session()
 {
     public long Id { get; init; }
     public DateTime? StartTime { get; init; }

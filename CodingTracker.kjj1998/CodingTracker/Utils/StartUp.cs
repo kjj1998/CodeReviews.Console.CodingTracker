@@ -10,6 +10,7 @@ public static class StartUp
         string dbName =  Helper.Config.GetSection("Database:Name").Value ?? string.Empty;
         string dbPath = Helper.FindDirectoryOfFile(Directory.GetCurrentDirectory(), "Program.cs") + "/" + dbName;
         string tableName = Helper.Config.GetSection("Database:TableName").Value ?? string.Empty;
+        string goalsTableName = Helper.Config.GetSection("Database:GoalsTableName").Value ?? string.Empty;
         
         Console.WriteLine(dbPath);
         
@@ -21,12 +22,21 @@ public static class StartUp
 
         if (!CheckTableExists(connection, tableName))
         {
-            CreateTable(connection, tableName);
-            SeedTable(connection);
+            CreateTable(connection, tableName, QueriesAndCommands.CreateTable);
+            SeedCodingSessionsTable(connection);
         }
         else
         {
             Console.WriteLine($"{tableName} table found!");
+        }
+
+        if (!CheckTableExists(connection, goalsTableName))
+        {
+            CreateTable(connection, goalsTableName, QueriesAndCommands.CreateGoalsTable);
+        }
+        else
+        {
+            Console.WriteLine($"{goalsTableName} table found!");
         }
 
         return connection;
@@ -41,16 +51,16 @@ public static class StartUp
         return reader.HasRows;
     }
 
-    private static void CreateTable(SqliteConnection connection, string tableName)
+    private static void CreateTable(SqliteConnection connection, string tableName, string query)
     {
-        using var command = new SqliteCommand(QueriesAndCommands.CreateTable, connection);
+        using var command = new SqliteCommand(query, connection);
         command.Parameters.AddWithValue("@tableName", tableName);
 
         command.ExecuteNonQuery();
         Console.WriteLine($"{tableName} table successfully created.");
     }
     
-    private static void SeedTable(SqliteConnection connection)
+    private static void SeedCodingSessionsTable(SqliteConnection connection)
     {
         var today = DateTime.Now;
         int prevMonth = today.Month - 1;

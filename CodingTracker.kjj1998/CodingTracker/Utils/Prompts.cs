@@ -12,7 +12,7 @@ public static class Prompts
         var timePrompt = new TextPrompt<string>(
             $"Enter the [aqua bold]{type} (including date)[/] of your coding session in " +
             $"[aqua bold]{DateTimeFormat}[/] format: ")
-            .Validate(value => CodingTracker.Utils.Helper.ValidateDateTime(value, DateTimeFormat, type, startTime))
+            .Validate(value => Helper.ValidateDateTime(value, DateTimeFormat, type, startTime))
             .PromptStyle(new Style(foreground:Color.Aqua, decoration:Decoration.Bold));
         string dateTimeString = AnsiConsole.Prompt(timePrompt);
         
@@ -22,17 +22,56 @@ public static class Prompts
         return dateTime;
     }
 
+    public static double DoubleValuePrompt(string instruction)
+    {
+        var doubleValuePrompt = new TextPrompt<string>(instruction)
+            .Validate(value => double.TryParse(value, out double _))
+            .PromptStyle(new Style(foreground:Color.Aqua, decoration:Decoration.Bold));
+
+        string val = AnsiConsole.Prompt(doubleValuePrompt);
+
+        double.TryParse(val, out double doubleVal);
+        
+        return doubleVal;
+    }
+
     public static int RecordSelectionPrompt(HashSet<int> recordIds, string action)
     {
         var idPrompt = new TextPrompt<int>(
             "Enter the [aqua bold]id[/] of the coding session " +
             $"which you want to [aqua bold]{action}[/]: ")
-            .Validate(value => CodingTracker.Utils.Helper.ValidateId(value, recordIds))
+            .Validate(value => Helper.ValidateId(value, recordIds))
             .PromptStyle(new Style(foreground:Color.Aqua, decoration:Decoration.Bold));
 
         int idOfSelectedRecord = AnsiConsole.Prompt(idPrompt);
 
         return idOfSelectedRecord;
+    }
+    
+    public static long SessionSelectionPrompt(HashSet<long> sessionIds, string action)
+    {
+        var idPrompt = new TextPrompt<long>(
+                "Enter the [aqua bold]id[/] of the coding session " +
+                $"which you want to [aqua bold]{action}[/]: ")
+            .Validate(value => Helper.ValidateId(value, sessionIds))
+            .PromptStyle(new Style(foreground:Color.Aqua, decoration:Decoration.Bold));
+
+        long idOfSelectedRecord = AnsiConsole.Prompt(idPrompt);
+
+        return idOfSelectedRecord;
+    }
+    
+    public static long GoalSelectionPrompt(HashSet<long> goalIds, string action)
+    {
+        var goalPrompt = new TextPrompt<long>(
+                "Enter the [aqua bold]id[/] of the goal " +
+                $"which you want to [aqua bold]{action}[/]: ")
+            .Validate(value => Helper.ValidateId(value, goalIds))
+            .PromptStyle(new Style(foreground:Color.Aqua, decoration:Decoration.Bold));
+
+        long idOfSelectedGoal = AnsiConsole.Prompt(goalPrompt);
+
+        return idOfSelectedGoal;
     }
 
     public static char FilterSelectionPrompt()
@@ -62,5 +101,19 @@ public static class Prompts
                 ]));
 
         return sortingOption.ToCharArray()[0];
+    }
+    
+    public static string OptionSelectionPrompt(List<string> options, string instruction, Style? highlightStyle = null)
+    {
+        string selectedOption = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title(instruction)
+                .PageSize(10)
+                .MoreChoicesText("[grey](Move up and down to reveal more options)[/]")
+                .AddChoices(options)
+                .HighlightStyle(highlightStyle ?? Style.Plain)
+            );
+
+        return selectedOption;
     }
 }

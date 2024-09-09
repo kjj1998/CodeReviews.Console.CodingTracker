@@ -1,4 +1,4 @@
-namespace CodingTracker.Models;
+namespace CodingTracker.Model;
 
 public class MonthlyOccurrence
 {

@@ -16,24 +16,20 @@ public static class Display
 
     public static char MenuDisplay()
     {
-        var selectionPrompt = new SelectionPrompt<string>
-        {
-            Title = "\n[bold]What would you like to [green]do[/][/]?",
-            PageSize = 10,
-            MoreChoicesText = "[grey](Move up and down to reveal more options)[/]",
-            HighlightStyle = new Style(Color.Yellow, Color.Blue1, Decoration.Bold)
-        };
-        selectionPrompt.AddChoices([
+        List<string> options =
+        [
             "1. View all coding sessions",
             "2. Create a new coding session",
             "3. Update an existing coding session",
             "4. Delete an existing coding session",
             "5. View a summary of your coding sessions",
             "6. Start a live coding session",
-            "7. Exit the application"
-        ]);
-
-        string option = AnsiConsole.Prompt(selectionPrompt);
+            "7. View/Edit coding goals",
+            "8. Exit the application"
+        ];
+        var highlightStyle = new Style(Color.Yellow, Color.Blue1, Decoration.Bold);
+        const string instruction = "\n[bold]What would you like to [green]do[/][/]?";
+        string option = Utils.Prompts.OptionSelectionPrompt(options, instruction, highlightStyle);
         string message = LowerCaseFirstWord(option.Substring(3, option.Length - 3));
         
         AnsiConsole.WriteLine($"\nYou have chosen to {message}.");

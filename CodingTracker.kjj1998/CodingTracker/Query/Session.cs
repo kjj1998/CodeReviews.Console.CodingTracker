@@ -1,13 +1,7 @@
-namespace CodingTracker.Repository;
+namespace CodingTracker.Query;
 
-public static class QueriesAndCommands
+public class Session
 {
-    public const string CheckTableExists = """
-                                           SELECT name 
-                                           FROM sqlite_master 
-                                           WHERE type='table' AND name=@tableName;
-                                           """;
-
     public const string ViewAllRecords = """
                                          SELECT id, startTime, endTime, duration 
                                          FROM coding_sessions
@@ -24,7 +18,7 @@ public static class QueriesAndCommands
                                                   FROM coding_sessions;
                                                   """;
 
-    public const string GetTotalNumOfCodingSessions = "SELECT COUNT(Id) AS totalCount FROM coding_sessions;";
+    public const string GetTotalNumOfSessions = "SELECT COUNT(Id) AS totalCount FROM coding_sessions;";
 
     public const string GetTotalTimeSpentCodingWithinATimePeriod = """
                                                                    SELECT SUM(duration) AS totalDuration 
@@ -32,7 +26,7 @@ public static class QueriesAndCommands
                                                                    WHERE startTime>=@StartTime AND endTime<=@EndTime;
                                                                    """;
 
-    public const string GetTotalNumOfCodingSessionsWithinATimePeriod = """
+    public const string GetTotalNumOfSessionsWithinATimePeriod = """
                                                                        SELECT COUNT(Id) AS totalCount 
                                                                        FROM coding_sessions 
                                                                        WHERE startTime>=@StartTime AND endTime<=@EndTime;
@@ -69,11 +63,13 @@ public static class QueriesAndCommands
                                                                                   ORDER BY
                                                                                       all_months.month;
                                                                                   """;
-
+    
     public const string InsertRecord = "INSERT INTO coding_sessions (startTime, endTime, duration) VALUES (@StartTime, @EndTime, @Duration)";
 
-    public const string UpdateRecord = "UPDATE coding_sessions SET startTime = @StartTime, endTime = @EndTime, duration = @Duration WHERE id = @Id";
+    public const string UpdateSession = "UPDATE coding_sessions SET startTime = @StartTime, endTime = @EndTime, duration = @Duration WHERE id = @Id";
 
-    public const string DeleteRecord = "DELETE FROM coding_sessions WHERE id = @Id";
+    public const string DeleteSession = "DELETE FROM coding_sessions WHERE id = @Id";
+    
     public const string CreateTable = "CREATE TABLE coding_sessions (id INTEGER PRIMARY KEY, startTime DATE NOT NULL, endTime DATE NOT NULL, duration INT NOT NULL)";
+    
 }
