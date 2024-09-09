@@ -58,7 +58,8 @@ public static class CodingSessionRepo
                 new Markup($"{session.StartTime}"),
                 new Markup($"{session.EndTime}"),
                 new Markup($"{Utils.Helper.ConvertSecondsToHoursMinutesSeconds(
-                    Convert.ToInt32(session.Duration))}"));
+                    Convert.ToInt32(session.Duration))}")
+                );
         }
 
         Console.WriteLine();
