@@ -26,8 +26,8 @@ It will contain the properties of the coding session: Id, StartTime, EndTime, Du
     - On program startup, if the database does not exist and/or the table(s) does not exist,
       the database and/or the table(s) will be created and seeded with random information
 
-* A console-based UI where users can navigates using commands from the keyboard
-    - ![image](Screenshots/menu.png)
+* A console-based UI where users can navigate using commands from the keyboard
+    - ![image](CodingTracker.kjj1998/CodingTracker/Screenshots/menu.png)
 
 * CRUD DB functions
     * Users can create, read, update and delete coding sessions from the UI
@@ -43,4 +43,4 @@ creat a new session when the user decides to stop coding
       * number of coding sessions
       * average time spent per coding session
       * monthly breakdown of number of coding sessions
-    * ![image](Screenshots/summary.png)
+    * ![image](CodingTracker.kjj1998/CodingTracker/Screenshots/summary.png)
